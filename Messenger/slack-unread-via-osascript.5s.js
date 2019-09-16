@@ -1,0 +1,80 @@
+#!/usr/bin/env /usr/bin/osascript -l JavaScript
+//
+// {
+//   'bitbar.title': "Slack Notification",
+//   'bitbar.version': "v1.0",
+//   'bitbar.author': "nemroff",
+//   'bitbar.author.github': "nemroff",
+//   'bitbar.desc': "Show number of unread Slack messages",
+//   'bitbar.image': "https://i.imgur.com/I3MdNmU.png",
+//   'bitbar.dependencies': "python,ruby,node",
+//   'bitbar.abouturl': "http://url-to-about.com/",
+// }
+//
+/// <reference path="../@jxa/global-type/src/index.d.ts" />
+/// <reference path="../@jxa/types/src/index.d.ts" />
+
+// To get the unread count from the dock status label: (requires accessibility features)
+// Application('System Events').processes.byName("Dock").lists.at(0).uiElements.byName("Slack").attributes.byName('AXStatusLabel').value()
+
+const slack = Application('Slack');
+
+const images = {
+  'bwTransparent': 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAGDGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp0aWZmPSJodHRwOi8vbnMuYWRvYmUuY29tL3RpZmYvMS4wLyIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczpkYz0iaHR0cDovL3B1cmwub3JnL2RjL2VsZW1lbnRzLzEuMS8iIHhtbG5zOnBob3Rvc2hvcD0iaHR0cDovL25zLmFkb2JlLmNvbS9waG90b3Nob3AvMS4wLyIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0RXZ0PSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VFdmVudCMiIHRpZmY6T3JpZW50YXRpb249IjEiIHhtcDpDcmVhdGVEYXRlPSIyMDE5LTA5LTExVDE1OjUyOjQxLTA3OjAwIiB4bXA6TW9kaWZ5RGF0ZT0iMjAxOS0wOS0xMVQxNjoyMzozMS0wNzowMCIgeG1wOk1ldGFkYXRhRGF0ZT0iMjAxOS0wOS0xMVQxNjoyMzozMS0wNzowMCIgZGM6Zm9ybWF0PSJpbWFnZS9wbmciIHBob3Rvc2hvcDpDb2xvck1vZGU9IjMiIHBob3Rvc2hvcDpJQ0NQcm9maWxlPSJzUkdCIElFQzYxOTY2LTIuMSIgeG1wTU06SW5zdGFuY2VJRD0ieG1wLmlpZDo4ZWM0Mjc1Mi0xYThhLTRjMmUtYmUyNy1hZjQ0ODBjNjZkOWMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NzdhMjdkYjgtMDgyYi00NDAwLWI0YjAtOWM4N2Y0NGRmZWY4IiB4bXBNTTpPcmlnaW5hbERvY3VtZW50SUQ9InhtcC5kaWQ6NzdhMjdkYjgtMDgyYi00NDAwLWI0YjAtOWM4N2Y0NGRmZWY4Ij4gPHhtcE1NOkhpc3Rvcnk+IDxyZGY6U2VxPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6NzdhMjdkYjgtMDgyYi00NDAwLWI0YjAtOWM4N2Y0NGRmZWY4IiBzdEV2dDp3aGVuPSIyMDE5LTA5LTExVDE2OjE5OjQ1LTA3OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0ic2F2ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6OGVjNDI3NTItMWE4YS00YzJlLWJlMjctYWY0NDgwYzY2ZDljIiBzdEV2dDp3aGVuPSIyMDE5LTA5LTExVDE2OjIzOjMxLTA3OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgc3RFdnQ6Y2hhbmdlZD0iLyIvPiA8L3JkZjpTZXE+IDwveG1wTU06SGlzdG9yeT4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz5v8aV4AAAC5ElEQVRYhbXX32scVRQH8M/ObmNW22QfChJZfzxoiYhYjIKI/uGCD5baF1FRLDXUh4qJjZa2mjYlcbPb6cO505lsZ3ZvEvuFYX7cH+d77vneM+f25GENH+ENHOM2tjFN7QNs4j2sYA8/Y3/ZxP0M46v4Eu+m51cTkRn+Sn0+xKe4lPpcxjr+bJBsRZFB4E2MW4hv4mK6NsUqNDFOYxdiflAbLmknuopheh62tPdE6BYiZwUe4WlHWy9dZ0YOgV3sdBg/N3JCcIRvcR+vq4V7jIlQ/UslAE/wg1ix5rJPE6lzExgK1a5njDkSYfn3lLZWGzYei7AeDoRSPxdbJjeu+7iRiOTgNXyRbBQo09gbhchwb53COOHFloh/mdF/E2+rRd9LZK4W2DiF4SZGIkcsQ6FbJxuFUPNZMEvXRHe6PRLedqX84wK/LZhgEXaFmB5p18K++Bd0hXaK2308TC9rqfNsyTXBHXyP/4QG7uMVsZuepjm/w98iBO8IIU7THE/wC25V7Hqpw3COcfO5EtskeT6b86gvNNHHQSJXzbGuTlglDhOJclEimohlrAyvyBNdPxlsI/8CeiIZfYD3RbIglu0uvhbLNhbbbiSWeEeE4CD1v4hPUr/c9L6Nm1Uls9Uy8EK6j0SiGjXarqT79eTdVuNbDlbwMaYDUUZ1sS6FV6OWtrE6JEsLjxYMcKVQezqPWSKw2tE+EJ705ZV2bbhQiAKyDfd0FyJNPMY/ZySwV4jq9Q+1Usv0vp0xQU/slh9lVMANlELIPw1EJrsmYrqW3neEUnOxi6/SHF0ha6KycViJ71Ck5LNiILbkr8K7nNA9H3gelGKHfKYW80zoZ1udJ14aAWInbDi5m8bicPKNJaHMqYpz0JZq/7eDyWkNVyhkHExyCOwLUc2v1pEQr3SfL89LkSMWIicEO14sOGZqkR04eVKu0HWgOYGcFDoVqu4LLw+kYkK93R6I//9QlHi/O/m37MQzBNyzDUMbbwQAAAAASUVORK5CYII=',
+  'bwSolid': 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAAlwSFlzAAAWJQAAFiUBSVIk8AAAAVlpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IlhNUCBDb3JlIDUuNC4wIj4KICAgPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICAgICAgPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4KTMInWQAAA2dJREFUWAm9lstvTkEYh0vR0hQLrFCXomsrXWBF2fgPBGvBqrGxkFizJk1cwl4iLnVZlETcI1ZuRRviroK0ded5Pn3l5GS+85224pc838z3zpx558y878ypqyunxXQ7APfhFuyAJghZ3w43wD5dsAT+iWYzyin4lWGY+k6YMEIn5RBk+5zh/xwYtzYywjfIDm69F1pgPjyAfPt3bJugUJMKW/80LqRI9ZuF3dVRqTetx76o0lrwM7GgLZoeUfFt8nL5fV6sp1Rz/JodGLUbTidGr+Y00bW6KbW0+d7vMGyF29AODaAG4SPM8M//0mQcOYGpEGnopD5APgj9vwcKFStgEHVAKxRti4O+hfNwF0YjgzZ89FE3TV9DnYeMeW6gpd4iZTPtHEyVWYG59DsBkc76Mq584coJ95My5ajIdplnZsIKqLUFu+mTH0ufXS73ahhLRLfx3AJwoGrSqXHjJPPS5yonYCSPRV956DP49mZESsaLPhpTjdg+2XgMhqp0KDKfpfHJCNbzeojhAugjJX0etWEadEIv+Da1eEmfI9ACIe+DQ/ACBuAKrANluhrkrlKM7enqZdYUe+8sjVTTMWZsW9SpVoLI/XbL+sDlz8plXgCW/fAelGMsBQ8sY0JMv2fwYxI/IRtCOne2plsEmRHfAtUUg0+hwzJwjJBjxPjRL9qSW+ByuWxx2q2lbtq5vG7BYchOJrsFscxF5d8tYJzKl4wOY2ZR9mDzyG2DexD2KA9jawDf+CCEvWypzx1Qd73Kwz3YdbCtSvtz7E7O5bZe1nG2301jYDqk9AWjezc71YjN7fFZ+znRsajZCL0Iziqvaxg8u7PBlO/j830w2ovJcfR5yUorGHBeEBotT8I8UF6p2WWLukHWbgdkkKa+C6NvvtSHt2GrW9ALW6ADFsFj6IY3UFbn6LgB1oBbVrRqbmv4eEW9psqsgPFgxhgLXj6llT2ISj+U6ejbmAl7Ic4ML6mr0AVPoVDjnYB7ayashOaMJ7diOWwGb8SqMor/hZxIXsbU+rwx/7/MCrjMKek02lITcGyDulBlJmCWmDb5vi6tmaJzb7f85/kPbH0wbplWnhM6Coape5+bbtIJfmBEu6V57vVeqPrC1j+NDuyp2AgGWj/sg/1gxKs7MAA6HITjsAtqZsFvi4xHiathFVUAAAAASUVORK5CYII=',
+  'color': 'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAACXBIWXMAABYlAAAWJQFJUiTwAAAGaGlUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4gPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iQWRvYmUgWE1QIENvcmUgNS42LWMxNDUgNzkuMTYzNDk5LCAyMDE4LzA4LzEzLTE2OjQwOjIyICAgICAgICAiPiA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPiA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIgeG1sbnM6cGhvdG9zaG9wPSJodHRwOi8vbnMuYWRvYmUuY29tL3Bob3Rvc2hvcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RFdnQ9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZUV2ZW50IyIgeG1wOkNyZWF0b3JUb29sPSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIgeG1wOkNyZWF0ZURhdGU9IjIwMTktMDktMTFUMTU6MjQ6MjUtMDc6MDAiIHhtcDpNb2RpZnlEYXRlPSIyMDE5LTA5LTExVDE1OjUxOjQyLTA3OjAwIiB4bXA6TWV0YWRhdGFEYXRlPSIyMDE5LTA5LTExVDE1OjUxOjQyLTA3OjAwIiBkYzpmb3JtYXQ9ImltYWdlL3BuZyIgcGhvdG9zaG9wOkNvbG9yTW9kZT0iMyIgcGhvdG9zaG9wOklDQ1Byb2ZpbGU9InNSR0IgSUVDNjE5NjYtMi4xIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOjRlNmJiNDQwLWY5YWItNGUzOC04MjJmLWU5MWI0MWMwMjRjNCIgeG1wTU06RG9jdW1lbnRJRD0iYWRvYmU6ZG9jaWQ6cGhvdG9zaG9wOjdlMTVlZTcxLWVkMDAtYjk0ZS1iODQyLTk1Y2NmMGRmYmU0YSIgeG1wTU06T3JpZ2luYWxEb2N1bWVudElEPSJ4bXAuZGlkOmNhMjhjYzY4LTMxNjMtNDE5YS04ODY5LWEwNWFkN2Y3NzAxMCI+IDx4bXBNTTpIaXN0b3J5PiA8cmRmOlNlcT4gPHJkZjpsaSBzdEV2dDphY3Rpb249ImNyZWF0ZWQiIHN0RXZ0Omluc3RhbmNlSUQ9InhtcC5paWQ6Y2EyOGNjNjgtMzE2My00MTlhLTg4NjktYTA1YWQ3Zjc3MDEwIiBzdEV2dDp3aGVuPSIyMDE5LTA5LTExVDE1OjI0OjI1LTA3OjAwIiBzdEV2dDpzb2Z0d2FyZUFnZW50PSJBZG9iZSBQaG90b3Nob3AgQ0MgMjAxOSAoTWFjaW50b3NoKSIvPiA8cmRmOmxpIHN0RXZ0OmFjdGlvbj0iY29udmVydGVkIiBzdEV2dDpwYXJhbWV0ZXJzPSJmcm9tIGFwcGxpY2F0aW9uL3ZuZC5hZG9iZS5waG90b3Nob3AgdG8gaW1hZ2UvcG5nIi8+IDxyZGY6bGkgc3RFdnQ6YWN0aW9uPSJzYXZlZCIgc3RFdnQ6aW5zdGFuY2VJRD0ieG1wLmlpZDo0ZTZiYjQ0MC1mOWFiLTRlMzgtODIyZi1lOTFiNDFjMDI0YzQiIHN0RXZ0OndoZW49IjIwMTktMDktMTFUMTU6NTE6NDItMDc6MDAiIHN0RXZ0OnNvZnR3YXJlQWdlbnQ9IkFkb2JlIFBob3Rvc2hvcCBDQyAyMDE5IChNYWNpbnRvc2gpIiBzdEV2dDpjaGFuZ2VkPSIvIi8+IDwvcmRmOlNlcT4gPC94bXBNTTpIaXN0b3J5PiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PtMWC/IAAAMxSURBVFiFrZfBSxtREMZ/LsFiKbJtQ7GIYSntxcMiVJJDDl6K1BxyEmrjQRCxpVDQP8BTzqU99CCBCj24WPFiDlFECh4iGJSWpXgRSoiIIqluPdQqEnt4b8uabHY30Q+WbGbmzTfsvJk3r4UAiOatFmAQ6AdOgdlCXN1w2ui5qRgwDLQBK8CCmUhf+vlWggQATAPzwBjwFliP5q0RB/kIsC51Y9J2OojjFj+DaN6KAhsuKgvo+Pv7HcABoLrYxMxEuuDlP8gXeFpHrgJP5ONGDtDr5zwUIIC9a6xv9XMe5AssA9sB7JqCbwCFuHoOPAO+ACc3HUCQFFCIq/vAkJtOz0313EgAcrf34p+3Q2CpEFePGyHSc1OtwHOgE9iyqyMkm8w0MN6Av6No3kpUNyMP8ofAKtDtkGWA1wqiwzVCDnAPMKJ5K2gje+8klxgHBhVEe20GjxA9IAgG6sj7Q4je3iz+yKceDuVvex39qQLMApUmyNcKcXXXTKR3gTUX/RGw5LG+AswqciONInp7YHKuluVQVRA/gYSZSNerFAsYNRPpjf+HUTRv3ULk1K83/CrE1V03hZ6b6gJuAztmIl1xyHscZhdSf4aTbP7lmxqHWsn4br8XIylFBohWJ7KvF4sg5gGdrO6gXKyxDcvfFul8BPhA1ammlQxbHwMMxM4HmQKtZBwAlLN6BzAH9NWJrRoWMBFOmp8V6XymmtxGMZK6C+Qc5EiiOcf/RsiRXDPlrB4LIcYor4YygGg81egrRlJddz7+sANqFAowHELkzA32yffAw8l9rtdH2hTEAOkGrxp2YgdRds1gRQEWgEyVYhuYDOIhnDQrQArReBpBBlgIaSXjEnhVjKQ+Iea/PWBZKxnnQT2Fk+ZGOas/RuwXr5QBnAOb4aQpjmNbqpWMAuA5wfoEcYwo1YYQaCLyQjmr9wDfHKITxP6ZDCfNfb/1Qc/zRtAOvABWy1n9RqbiZtGNGME8ESQFXpvxwmdt500EsFlHbiF6gP2uuths+Tn3TYGsjuo+UQEmtJJxFk6aZ8AEtUNNxi41L/heTgGKkVTN9VwrGVcm4nJWr7meh5Om7/X8H3cG7KGmeuB3AAAAAElFTkSuQmCC',
+}
+
+
+// var name = Application('Slack').windows.name()
+// var re = /^Slack \| (?<conversation>[^\|]+) \| (?<workspace>[^\|]+)(?: \| (?<unread>\d+) new items?)?$/gi
+
+// var results = re.exec(name)
+
+// results.groups
+
+
+// /Users/snemroff/Library/Application Support/Slack/storage/slack-teams
+
+function updateMenuBar() {
+
+  const log = function() {
+    ObjC.import('Foundation');
+    for (let argument of arguments) {
+        $.NSFileHandle.fileHandleWithStandardOutput.writeData($.NSString.alloc.initWithString(String(argument) + "\n").dataUsingEncoding($.NSNEXTSTEPStringEncoding));
+    }
+  }
+
+  const config = {
+    'mode': Application('System Events').appearancePreferences.darkMode() ? 'dark' : 'light',
+    'command': 'href=slack://open',
+  }
+
+  const icon = {
+    'dark': {
+      'none': `templateImage=${images.bwTransparent}`,
+      'notify': `templateImage=${images.bwSolid}`,
+      // 'notify': `templateImage=${images.color}`,
+    },
+    'light': {
+      'none': `templateImage=${images.bwSolid}`,
+      'notify': `image=${images.color}`,
+    },
+  }
+
+  const re = / (\d+) new items?/gi
+
+  const name = slack.windows.name()
+  const result = re.exec(name)
+  const unread_count = Array.isArray(result) ? result[1] : ''
+
+  log([
+    `${unread_count} | ${icon[config.mode][unread_count ? 'notify' : 'none']}`,
+    '---',
+    `${String(name).replace(/\|/g,':')} | ${config.command}`
+
+    ].join('\n'))
+
+}
+
+if (slack.running()) updateMenuBar();
