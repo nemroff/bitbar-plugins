@@ -46,8 +46,14 @@ function updateMenuBar() {
   }
 
   const config = {
-    'mode': Application('System Events').appearancePreferences.darkMode() ? 'dark' : 'light',
+    'mode': 'light',
     'command': 'href=slack://open',
+  }
+
+  try {
+    config.mode = Application('System Events').appearancePreferences.darkMode() ? 'dark' : 'light'
+  } catch (e) {
+    config.mode = 'light'
   }
 
   const icon = {
