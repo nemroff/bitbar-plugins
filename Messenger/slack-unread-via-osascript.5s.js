@@ -17,6 +17,9 @@
 // To get the unread count from the dock status label: (requires accessibility features)
 // Application('System Events').processes.byName("Dock").lists.at(0).uiElements.byName("Slack").attributes.byName('AXStatusLabel').value()
 
+// TO WORK IN: https://github.com/sindresorhus/bitbar
+// Toolkit to simplify returning updates
+
 const slack = Application('Slack');
 
 const images = {
@@ -41,13 +44,14 @@ function updateMenuBar() {
   const log = function() {
     ObjC.import('Foundation');
     for (let argument of arguments) {
-        $.NSFileHandle.fileHandleWithStandardOutput.writeData($.NSString.alloc.initWithString(String(argument) + "\n").dataUsingEncoding($.NSNEXTSTEPStringEncoding));
+        $.NSFileHandle.fileHandleWithStandardOutput.writeData($.NSString.alloc.initWithString(String(argument) + "\n").dataUsingEncoding($.NSUTF8StringEncoding));
+        // $.NSFileHandle.fileHandleWithStandardOutput.writeData($.NSString.alloc.initWithString(String(argument) + "\n").dataUsingEncoding($.NSNEXTSTEPStringEncoding));
     }
   }
 
   const config = {
     'mode': 'light',
-    'command': 'href=slack://open',
+    'command': 'href=slack://open refresh=true',
   }
 
   try {
